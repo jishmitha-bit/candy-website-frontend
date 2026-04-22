@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Theme Palettes</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0A0A0F; color: #E2E8F0; font-family: Inter, system-ui, sans-serif; padding: 40px 32px; }
+  h1 { font-size: 22px; font-weight: 700; margin-bottom: 6px; letter-spacing: -0.02em; }
+  p.sub { font-size: 13px; color: #64748B; margin-bottom: 36px; }
+  .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+  .card { border-radius: 16px; padding: 22px 24px; border: 1px solid rgba(255,255,255,0.07); }
+  .card-title { font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 4px; }
+  .card-desc { font-size: 12px; color: #64748B; margin-bottom: 16px; line-height: 1.5; }
+  .swatches { display: flex; gap: 8px; margin-bottom: 14px; }
+  .swatch { flex: 1; height: 44px; border-radius: 10px; position: relative; }
+  .swatch span { position: absolute; bottom: -18px; left: 0; right: 0; text-align: center; font-size: 10px; color: #475569; font-family: monospace; }
+  .grad-bar { height: 8px; border-radius: 6px; margin-top: 26px; }
+  .label-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+  .label { font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 600; }
+</style>
+</head>
+<body>
+<h1>Theme Palettes</h1>
+<p class="sub">All 8 options — pick your favourite</p>
+<div class="grid">
+
+  <!-- Option 1 -->
+  <div class="card" style="background:rgba(2,8,21,0.9)">
+    <div class="card-title" style="color:#60A5FA">Option 1 — Deep Space Blue</div>
+    <div class="card-desc">Electric blue + cyan. Enterprise, trusted — like Linear or Raycast.</div>
+    <div class="swatches">
+      <div class="swatch" style="background:#020815"><span>#020815</span></div>
+      <div class="swatch" style="background:#0D1B3E"><span>#0D1B3E</span></div>
+      <div class="swatch" style="background:#3B82F6"><span>#3B82F6</span></div>
+      <div class="swatch" style="background:#06B6D4"><span>#06B6D4</span></div>
+      <div class="swatch" style="background:#BAE6FD"><span>#BAE6FD</span></div>
+    </div>
+    <div class="grad-bar" style="background:linear-gradient(90deg,#3B82F6,#06B6D4)"></div>
+    <div class="label-row" style="margin-top:20px">
+      <span class="label" style="background:rgba(59,130,246,0.15);color:#60A5FA">Primary</span>
+      <span class="label" style="background:rgba(6,182,212,0.15);color:#22D3EE">Accent</span>
+      <span class="label" style="background:rgba(186,230,253,0.1);color:#BAE6FD">Text</span>
+    </div>
+  </div>
+
+  <!-- Option 2 -->
+  <div class="card" style="background:rgba(3,6,15,0.9)">
+    <div class="card-title" style="color:#818CF8">Option 2 — Cosmic Indigo</div>
+    <div class="card-desc">Indigo + sky blue. Premium, modern — like Vercel or Resend.</div>
+    <div class="swatches">
+      <div class="swatch" style="background:#03060F"><span>#03060F</span></div>
+      <div class="swatch" style="background:#0C0E2A"><span>#0C0E2A</span></div>
+      <div class="swatch" style="background:#6366F1"><span>#6366F1</span></div>
+      <div class="swatch" style="background:#38BDF8"><span>#38BDF8</span></div>
+      <div class="swatch" style="background:#C7D2FE"><span>#C7D2FE</span></div>
+    </div>
+    <div class="grad-bar" style="background:linear-gradient(90deg,#6366F1,#38BDF8)"></div>
+    <div class="label-row" style="margin-top:20px">
+      <span class="label" style="background:rgba(99,102,241,0.15);color:#818CF8">Primary</span>
+      <span class="label" style="background:rgba(56,189,248,0.15);color:#38BDF8">Accent</span>
+      <span class="label" style="background:rgba(199,210,254,0.1);color:#C7D2FE">Text</span>
+    </div>
+  </div>
+
+  <!-- Option 3 -->
+  <div class="card" style="background:rgba(2,10,12,0.9)">
+    <div class="card-title" style="color:#2DD4BF">Option 3 — Aurora Teal</div>
+    <div class="card-desc">Cool teal + blue. Calm, HR-friendly — like medical/fintech dashboards.</div>
+    <div class="swatches">
+      <div class="swatch" style="background:#020A0C"><span>#020A0C</span></div>
+      <div class="swatch" style="background:#0A1F22"><span>#0A1F22</span></div>
+      <div class="swatch" style="background:#0D9488"><span>#0D9488</span></div>
+      <div class="swatch" style="background:#0891B2"><span>#0891B2</span></div>
+      <div class="swatch" style="background:#99F6E4"><span>#99F6E4</span></div>
+    </div>
+    <div class="grad-bar" style="background:linear-gradient(90deg,#0D9488,#0891B2)"></div>
+    <div class="label-row" style="margin-top:20px">
+      <span class="label" style="background:rgba(13,148,136,0.15);color:#2DD4BF">Primary</span>
+      <span class="label" style="background:rgba(8,145,178,0.15);color:#38BDF8">Accent</span>
+      <span class="label" style="background:rgba(153,246,228,0.1);color:#99F6E4">Text</span>
+    </div>
+  </div>
+
+  <!-- Option 4 -->
+  <div class="card" style="background:rgba(10,10,15,0.9)">
+    <div class="card-title" style="color:#CBD5E1">Option 4 — Midnight Silver</div>
+    <div class="card-desc">Silver + slate. Neutral, no color dominance — like Figma dark or Notion.</div>
+    <div class="swatches">
+      <div class="swatch" style="background:#0A0A0F"><span>#0A0A0F</span></div>
+      <div class="swatch" style="background:#141418"><span>#141418</span></div>
+      <div class="swatch" style="background:#475569"><span>#475569</span></div>
+      <div class="swatch" style="background:#94A3B8"><span>#94A3B8</span></div>
+      <div class="swatch" style="background:#E2E8F0"><span>#E2E8F0</span></div>
+    </div>
+    <div class="grad-bar" style="background:linear-gradient(90deg,#475569,#94A3B8)"></div>
+    <div class="label-row" style="margin-top:20px">
+      <span class="label" style="background:rgba(71,85,105,0.3);color:#94A3B8">Primary</span>
+      <span class="label" style="background:rgba(148,163,184,0.15);color:#CBD5E1">Accent</span>
+      <span class="label" style="background:rgba(226,232,240,0.1);color:#E2E8F0">Text</span>
+    </div>
+  </div>
+
+  <!-- Option 5 -->
+  <div class="card" style="background:rgba(12,10,6,0.9)">
+    <div class="card-title" style="color:#FCD34D">Option 5 — Ember Amber</div>
+    <div class="card-desc">Amber + orange. Premium, energetic — like a financial dashboard.</div>
+    <div class="swatches">
+      <div class="swatch" style="background:#0C0A06"><span>#0C0A06</span></div>
+      <div class="swatch" style="background:#1C1508"><span>#1C1508</span></div>
+      <div class="swatch" style="background:#F59E0B"><span>#F59E0B</span></div>
+      <div class="swatch" style="background:#FB923C"><span>#FB923C</span></div>
+      <div class="swatch" style="background:#FEF3C7"><span>#FEF3C7</span></div>
+    </div>
+    <div class="grad-bar" style="background:linear-gradient(90deg,#F59E0B,#FB923C)"></div>
+    <div class="label-row" style="margin-top:20px">
+      <span class="label" style="background:rgba(245,158,11,0.15);color:#FCD34D">Primary</span>
+      <span class="label" style="background:rgba(251,146,60,0.15);color:#FB923C">Accent</span>
+      <span class="label" style="background:rgba(254,243,199,0.1);color:#FEF3C7">Text</span>
+    </div>
+  </div>
+
+  <!-- Option 6 -->
+  <div class="card" style="background:rgba(3,8,16,0.9)">
+    <div class="card-title" style="color:#7DD3FC">Option 6 — Arctic Ice ✦ Recommended</div>
+    <div class="card-desc">Sky blue + periwinkle. Crisp, futuristic — most "galaxy" without green.</div>
+    <div class="swatches">
+      <div class="swatch" style="background:#030810"><span>#030810</span></div>
+      <div class="swatch" style="background:#0A1525"><span>#0A1525</span></div>
+      <div class="swatch" style="background:#38BDF8"><span>#38BDF8</span></div>
+      <div class="swatch" style="background:#818CF8"><span>#818CF8</span></div>
+      <div class="swatch" style="background:#E0F2FE"><span>#E0F2FE</span></div>
+    </div>
+    <div class="grad-bar" style="background:linear-gradient(90deg,#38BDF8,#818CF8)"></div>
+    <div class="label-row" style="margin-top:20px">
+      <span class="label" style="background:rgba(56,189,248,0.15);color:#7DD3FC">Primary</span>
+      <span class="label" style="background:rgba(129,140,248,0.15);color:#818CF8">Accent</span>
+      <span class="label" style="background:rgba(224,242,254,0.1);color:#E0F2FE">Text</span>
+    </div>
+  </div>
+
+  <!-- Option 7 -->
+  <div class="card" style="background:rgba(13,6,8,0.9)">
+    <div class="card-title" style="color:#FB7185">Option 7 — Rose Gold Dark</div>
+    <div class="card-desc">Crimson + gold. Bold, distinctive — stands out from every typical SaaS tool.</div>
+    <div class="swatches">
+      <div class="swatch" style="background:#0D0608"><span>#0D0608</span></div>
+      <div class="swatch" style="background:#1E0C10"><span>#1E0C10</span></div>
+      <div class="swatch" style="background:#E11D48"><span>#E11D48</span></div>
+      <div class="swatch" style="background:#F59E0B"><span>#F59E0B</span></div>
+      <div class="swatch" style="background:#FFE4E6"><span>#FFE4E6</span></div>
+    </div>
+    <div class="grad-bar" style="background:linear-gradient(90deg,#E11D48,#F59E0B)"></div>
+    <div class="label-row" style="margin-top:20px">
+      <span class="label" style="background:rgba(225,29,72,0.15);color:#FB7185">Primary</span>
+      <span class="label" style="background:rgba(245,158,11,0.15);color:#FCD34D">Accent</span>
+      <span class="label" style="background:rgba(255,228,230,0.1);color:#FFE4E6">Text</span>
+    </div>
+  </div>
+
+  <!-- Option 8 -->
+  <div class="card" style="background:rgba(8,12,10,0.9)">
+    <div class="card-title" style="color:#34D399">Option 8 — Slate & Emerald</div>
+    <div class="card-desc">Forest green + slate. Calm, professional — fintech / healthcare feel.</div>
+    <div class="swatches">
+      <div class="swatch" style="background:#080C0A"><span>#080C0A</span></div>
+      <div class="swatch" style="background:#0F1F18"><span>#0F1F18</span></div>
+      <div class="swatch" style="background:#059669"><span>#059669</span></div>
+      <div class="swatch" style="background:#475569"><span>#475569</span></div>
+      <div class="swatch" style="background:#D1FAE5"><span>#D1FAE5</span></div>
+    </div>
+    <div class="grad-bar" style="background:linear-gradient(90deg,#059669,#0891B2)"></div>
+    <div class="label-row" style="margin-top:20px">
+      <span class="label" style="background:rgba(5,150,105,0.15);color:#34D399">Primary</span>
+      <span class="label" style="background:rgba(71,85,105,0.2);color:#94A3B8">Accent</span>
+      <span class="label" style="background:rgba(209,250,229,0.1);color:#D1FAE5">Text</span>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
