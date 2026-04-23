@@ -1,4 +1,4 @@
-# Metaspace — Voice Agent Dashboard
+# Candy — Voice Agent Dashboard
 
 A dark, galaxy-themed voice agent management platform built for HR teams and customer service operations. Built with React, Vite, TypeScript, and Tailwind CSS.
 
