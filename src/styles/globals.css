@@ -297,8 +297,22 @@ button, input, textarea { font-family: inherit; }
   --shadow-card: 0 1px 0 rgba(255,255,255,0.6) inset, 0 12px 30px -16px rgba(15,15,25,0.18);
 }
 
-/* Smooth crossfade when toggling */
-html { transition: background 0.25s ease, color 0.25s ease; }
+/* ── Theme-toggle transition ──
+ * Applied only while the theme is actively swapping (a class added by
+ * useTheme.ts for ~400ms). Scoping it this way means hover/focus
+ * transitions on individual elements stay snappy the rest of the time.
+ * --------------------------------------------------------------------------*/
+html.theme-transitioning,
+html.theme-transitioning *,
+html.theme-transitioning *::before,
+html.theme-transitioning *::after {
+  transition: background-color 0.4s ease,
+              border-color     0.4s ease,
+              color            0.4s ease,
+              fill             0.4s ease,
+              stroke           0.4s ease,
+              box-shadow       0.4s ease !important;
+}
 
 /* Light-mode adjustments for the ambient background and topbar */
 [data-theme="light"] .ambient-bg {
@@ -319,6 +333,8 @@ html { transition: background 0.25s ease, color 0.25s ease; }
   --input-bg-strong: rgba(0, 0, 0, 0.50);
   --surface-soft:    rgba(0, 0, 0, 0.22);
   --hero-bg:         linear-gradient(180deg, rgba(22,22,32,0.80), rgba(15,15,23,0.60));
+  --card-bg:         linear-gradient(180deg, rgba(22,22,32,0.75), rgba(15,15,23,0.60));
+  --card-bg-strong:  linear-gradient(180deg, rgba(22,22,32,0.90), rgba(15,15,23,0.90));
   --sidebar-bg:      linear-gradient(180deg, #0c0c14 0%, #08080f 100%);
   --shadow-deep:     0 20px 40px -10px rgba(0, 0, 0, 0.6);
   --shadow-rail:     8px 0 32px rgba(0, 0, 0, 0.45);
@@ -329,6 +345,8 @@ html { transition: background 0.25s ease, color 0.25s ease; }
   --input-bg-strong: rgba(255, 255, 255, 0.95);
   --surface-soft:    rgba(15, 15, 25, 0.04);
   --hero-bg:         linear-gradient(180deg, rgba(255,255,255,0.85), rgba(245,245,250,0.65));
+  --card-bg:         linear-gradient(180deg, rgba(255,255,255,0.85), rgba(245,247,252,0.70));
+  --card-bg-strong:  linear-gradient(180deg, rgba(255,255,255,0.96), rgba(245,247,252,0.90));
   --sidebar-bg:      linear-gradient(180deg, #FAFAFD 0%, #F1F2F7 100%);
   --shadow-deep:     0 20px 40px -10px rgba(15, 15, 25, 0.18);
   --shadow-rail:     8px 0 32px rgba(15, 15, 25, 0.10);

@@ -105,7 +105,7 @@ function CatCard({ cat, idx, tintColors, tintIconColors, onClick }) {
       onClick={onClick}
       style={{
         position: 'relative',
-        background: 'linear-gradient(180deg, rgba(22,22,32,0.75), rgba(15,15,23,0.6))',
+        background: 'var(--card-bg)',
         border: '1px solid var(--border)',
         borderRadius: 'var(--radius-lg)',
         padding: 24,

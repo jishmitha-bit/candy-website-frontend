@@ -1,16 +1,7 @@
-import { createContext, useContext, useState, useCallback, useEffect } from 'react';
+import { createContext, useContext, useState, useCallback } from 'react';
 import { seedCalls, seedChatMessages } from '../utils/mockData';
 
 const AppContext = createContext(null);
-
-// Theme initialization — runs once during useState init, BEFORE first paint.
-// Falls back to system preference if the user has never toggled.
-function getInitialTheme() {
-  if (typeof window === 'undefined') return 'dark';
-  const saved = localStorage.getItem('theme');
-  if (saved === 'light' || saved === 'dark') return saved;
-  return window.matchMedia?.('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
-}
 
 export function AppProvider({ children }) {
   const [currentView, setCurrentView]  = useState('auth');
@@ -18,17 +9,6 @@ export function AppProvider({ children }) {
   const [chatMessages,setChatMessages] = useState(seedChatMessages);
   const [calls,       setCalls]        = useState([]);
   const [toasts,      setToasts]       = useState([]);
-  const [theme,       setTheme]        = useState(getInitialTheme);
-
-  // Sync theme to <html data-theme="…"> and localStorage whenever it changes.
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-    try { localStorage.setItem('theme', theme); } catch {}
-  }, [theme]);
-
-  const toggleTheme = useCallback(() => {
-    setTheme(t => (t === 'dark' ? 'light' : 'dark'));
-  }, []);
 
   const showView = useCallback((name) => {
     setCurrentView(name);
@@ -51,7 +31,6 @@ export function AppProvider({ children }) {
       chatMessages, setChatMessages,
       calls, setCalls,
       toasts, addToast,
-      theme, toggleTheme,
     }}>
       {children}
     </AppContext.Provider>

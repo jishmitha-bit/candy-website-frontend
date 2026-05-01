@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useApp } from '../context/AppContext';
+import { useTheme } from '../hooks/useTheme';
 import Icon from '../assets/icons';
 
 const crumbMap = {
@@ -9,7 +10,8 @@ const crumbMap = {
 };
 
 export default function Topbar() {
-  const { currentView, addToast, theme, toggleTheme } = useApp();
+  const { currentView, addToast } = useApp();
+  const { theme, toggleTheme } = useTheme();
   const crumbs = crumbMap[currentView] ?? crumbMap.dashboard;
 
   // Shared style for every action button on the right side of the header.

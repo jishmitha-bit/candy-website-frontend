@@ -28,7 +28,7 @@ export default function AuthPage() {
         <div
           style={{
             position: 'relative', zIndex: 1,
-            background: 'linear-gradient(180deg, rgba(22,22,32,0.9), rgba(15,15,23,0.9))',
+            background: 'var(--card-bg-strong)',
             border: '1px solid var(--border-strong)',
             borderRadius: 'var(--radius-xl)',
             padding: '44px 40px',
