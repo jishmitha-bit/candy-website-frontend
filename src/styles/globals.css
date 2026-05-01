@@ -1,0 +1,272 @@
+/* ── Google Fonts ── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Core palette */
+  --bg-0: #000000;
+  --bg-1: #0a0a0f;
+  --bg-2: #0f0f17;
+  --bg-3: #14141f;
+  --surface: rgba(22, 22, 32, 0.65);
+  --surface-solid: #16161f;
+  --surface-elev: rgba(30, 30, 44, 0.75);
+  --border: rgba(255, 255, 255, 0.06);
+  --border-strong: rgba(255, 255, 255, 0.12);
+  --border-accent: rgba(117, 91, 227, 0.35);
+
+  /* Brand neons */
+  --purple: #755BE3;
+  --purple-hi: #9B82FF;
+  --blue: #18DAFC;
+  --teal: #4FD1C5;
+  --green: #4CAF50;
+  --pink: #E65AFF;
+  --amber: #FFB547;
+  --red: #FF5C7A;
+
+  /* Text */
+  --text-1: #F5F5FA;
+  --text-2: #B4B4C8;
+  --text-3: #7A7A92;
+  --text-4: #4E4E63;
+
+  /* Gradients */
+  --grad-brand: linear-gradient(135deg, #755BE3 0%, #18DAFC 100%);
+  --grad-brand-soft: linear-gradient(135deg, rgba(117,91,227,0.25) 0%, rgba(24,218,252,0.18) 100%);
+  --grad-hero: radial-gradient(ellipse at 50% 0%, rgba(117,91,227,0.25) 0%, rgba(24,218,252,0.08) 35%, transparent 70%);
+  --grad-pink: linear-gradient(135deg, #E65AFF 0%, #755BE3 100%);
+  --grad-teal: linear-gradient(135deg, #18DAFC 0%, #4FD1C5 100%);
+
+  --radius-sm: 10px;
+  --radius: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+
+  --shadow-glow-purple: 0 0 40px rgba(117, 91, 227, 0.35);
+  --shadow-glow-blue: 0 0 40px rgba(24, 218, 252, 0.25);
+  --shadow-card: 0 1px 0 rgba(255,255,255,0.03) inset, 0 20px 40px -20px rgba(0,0,0,0.6);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg-0);
+  color: var(--text-1);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.01em;
+}
+
+button, input, textarea { font-family: inherit; }
+
+::selection { background: var(--purple); color: #fff; }
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.15); }
+
+/* ── Ambient Background ── */
+.ambient-bg {
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background:
+    radial-gradient(ellipse 800px 600px at 15% 0%, rgba(117,91,227,0.12), transparent 60%),
+    radial-gradient(ellipse 900px 700px at 85% 100%, rgba(24,218,252,0.08), transparent 60%),
+    var(--bg-0);
+}
+.ambient-bg::after {
+  content: "";
+  position: absolute; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.08 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.4; mix-blend-mode: overlay;
+}
+
+/* ── Auth aura animation ── */
+@keyframes aura {
+  0%   { transform: scale(1) rotate(0deg); }
+  100% { transform: scale(1.15) rotate(10deg); }
+}
+.auth-aura {
+  position: absolute; inset: -80px; z-index: 0;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(117,91,227,0.55), transparent 50%),
+    radial-gradient(circle at 70% 70%, rgba(24,218,252,0.4), transparent 55%);
+  filter: blur(60px);
+  animation: aura 8s ease-in-out infinite alternate;
+  opacity: 0.8;
+}
+
+/* ── Logo shine ── */
+@keyframes shine {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+.logo-mark-shine::before {
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.3) 50%, transparent 60%);
+  animation: shine 3s infinite;
+}
+
+/* ── Pulse ── */
+@keyframes pulse-glow {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50%       { transform: scale(1.4); opacity: 0.6; }
+}
+.pulse-dot { animation: pulse-glow 2s infinite; }
+.pulse-dot-sm { animation: pulse-glow 1.5s infinite; }
+.pulse-dot-xs { animation: pulse-glow 1.2s infinite; }
+
+/* ── Typing dots ── */
+@keyframes typingBounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30%           { transform: translateY(-4px); opacity: 1; }
+}
+.typing-dot { animation: typingBounce 1.4s infinite ease-in-out; }
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+/* ── Progress shimmer ── */
+@keyframes shimmer {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+.progress-shimmer::after {
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  animation: shimmer 2s infinite;
+}
+
+/* ── Fade up ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-up { animation: fadeUp 0.4s ease-out both; }
+
+/* ── Cat card stagger ── */
+.cat-card-anim { animation: fadeUp 0.5s ease-out both; }
+.cat-card-anim:nth-child(1) { animation-delay: 0.05s; }
+.cat-card-anim:nth-child(2) { animation-delay: 0.10s; }
+.cat-card-anim:nth-child(3) { animation-delay: 0.15s; }
+.cat-card-anim:nth-child(4) { animation-delay: 0.20s; }
+.cat-card-anim:nth-child(5) { animation-delay: 0.25s; }
+.cat-card-anim:nth-child(6) { animation-delay: 0.30s; }
+
+/* ── Row flash ── */
+@keyframes rowFlash {
+  0%   { background: rgba(24,218,252,0.08); }
+  100% { background: transparent; }
+}
+.row-flash { animation: rowFlash 1.2s ease-out; }
+
+/* ── Toast in ── */
+@keyframes toastIn {
+  from { transform: translateX(20px); opacity: 0; }
+  to   { transform: translateX(0); opacity: 1; }
+}
+.toast-in { animation: toastIn 0.3s ease-out; }
+
+/* ── Gradient text utility ── */
+.grad-text {
+  background: var(--grad-brand);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.grad-text-pink {
+  background: var(--grad-pink);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Nav active accent bar ── */
+.nav-item-active::before {
+  content: "";
+  position: absolute; left: -14px; top: 50%; transform: translateY(-50%);
+  width: 3px; height: 18px;
+  background: var(--grad-brand);
+  border-radius: 0 3px 3px 0;
+}
+
+/* ── Btn primary shimmer ── */
+.btn-primary-shimmer::before {
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.25) 50%, transparent 70%);
+  transform: translateX(-100%);
+  transition: transform 0.6s;
+}
+.btn-primary-shimmer:hover::before { transform: translateX(100%); }
+
+/* ── Tooltip ── */
+.tooltip-wrap { position: relative; }
+.tooltip-wrap::after {
+  content: attr(data-tip);
+  position: absolute; bottom: 100%; left: 50%;
+  transform: translateX(-50%) translateY(-8px);
+  background: var(--bg-2); color: var(--text-1); font-size: 11px;
+  padding: 5px 9px; border-radius: 6px;
+  border: 1px solid var(--border-strong);
+  white-space: nowrap; pointer-events: none;
+  opacity: 0; transition: opacity 0.15s;
+  z-index: 100;
+}
+.tooltip-wrap:hover::after { opacity: 1; }
+
+/* ── Sidebar footer radial corner ── */
+.sidebar-footer-glow::before {
+  content: "";
+  position: absolute; width: 80px; height: 80px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(117,91,227,0.5), transparent 70%);
+  top: -30px; right: -20px;
+}
+
+/* ── Status-tag dot ── */
+.status-tag-dot::before {
+  content: "";
+  display: inline-block;
+  width: 6px; height: 6px; border-radius: 50%;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+/* ── Live indicator ── */
+.live-stat-dot::before {
+  content: "";
+  display: inline-block;
+  width: 8px; height: 8px; border-radius: 50%;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+/* ── Live indicator badge ── */
+.live-badge::before {
+  content: "";
+  display: inline-block;
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 10px var(--green);
+  margin-right: 6px;
+  animation: pulse-glow 1.2s infinite;
+}
+
+/* ── Status badge running dot ── */
+.status-badge-running::before {
+  content: "";
+  display: inline-block;
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--blue);
+  box-shadow: 0 0 8px var(--blue);
+  margin-right: 5px;
+  animation: pulse-glow 1.5s infinite;
+}
