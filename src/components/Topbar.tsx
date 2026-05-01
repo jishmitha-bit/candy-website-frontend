@@ -4,9 +4,14 @@ import { useTheme } from '../hooks/useTheme';
 import Icon from '../assets/icons';
 
 const crumbMap = {
-  dashboard: [{ t: 'Home' }, { t: 'Dashboard', current: true }],
-  hr:        [{ t: 'Home' }, { t: 'HR & Hiring' }, { t: 'Candidate Screening', current: true }],
-  live:      [{ t: 'Home' }, { t: 'Voice Bots' }, { t: 'Live Campaign', current: true }],
+  dashboard:  [{ t: 'Home' }, { t: 'Dashboard',     current: true }],
+  hr:         [{ t: 'Home' }, { t: 'HR & Hiring' }, { t: 'Candidate Screening', current: true }],
+  live:       [{ t: 'Home' }, { t: 'Voice Bots' },  { t: 'Live Campaign', current: true }],
+  ecommerce:  [{ t: 'Home' }, { t: 'Voice Agents' }, { t: 'E-commerce',  current: true }],
+  financial:  [{ t: 'Home' }, { t: 'Voice Agents' }, { t: 'Financial',   current: true }],
+  logistics:  [{ t: 'Home' }, { t: 'Voice Agents' }, { t: 'Logistics',   current: true }],
+  healthcare: [{ t: 'Home' }, { t: 'Voice Agents' }, { t: 'Healthcare',  current: true }],
+  marketing:  [{ t: 'Home' }, { t: 'Voice Agents' }, { t: 'Marketing',   current: true }],
 };
 
 export default function Topbar() {

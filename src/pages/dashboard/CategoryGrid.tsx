@@ -23,13 +23,27 @@ const tintIconColors = {
 export default function CategoryGrid() {
   const { showView, setActiveNav, addToast } = useApp();
 
+  // Each industry card maps to the view name registered in App.tsx's appViews.
+  // Update this map when adding a new agent folder under src/pages/.
+  const VIEW_BY_CAT_ID = {
+    ecom:   'ecommerce',
+    fin:    'financial',
+    log:    'logistics',
+    health: 'healthcare',
+    hr:     'hr',
+    mkt:    'marketing',
+  };
+
   function handleCardClick(cat) {
-    if (cat.id === 'hr') {
-      setActiveNav('chat');
-      showView('hr');
-    } else {
+    const view = VIEW_BY_CAT_ID[cat.id];
+    if (!view) {
       addToast(`${cat.title} workspace — opening soon`, 'info');
+      return;
     }
+    // Highlight the relevant sidebar item where applicable
+    if (cat.id === 'hr') setActiveNav('chat');
+    else                 setActiveNav('voice');
+    showView(view);
   }
 
   return (
