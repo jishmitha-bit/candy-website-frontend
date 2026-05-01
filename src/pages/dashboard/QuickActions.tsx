@@ -22,14 +22,14 @@ export default function QuickActions() {
           style={{
             display: 'flex', alignItems: 'center', gap: 12,
             padding: 12, borderRadius: 10,
-            background: 'rgba(255,255,255,0.02)',
+            background: 'var(--tint-1)',
             border: '1px solid var(--border)',
             marginBottom: 10,
             cursor: 'pointer',
             transition: 'all 0.15s',
           }}
-          onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; e.currentTarget.style.borderColor = 'var(--border-strong)'; }}
-          onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.02)'; e.currentTarget.style.borderColor = 'var(--border)'; }}
+          onMouseEnter={e => { e.currentTarget.style.background = 'var(--tint-2)'; e.currentTarget.style.borderColor = 'var(--border-strong)'; }}
+          onMouseLeave={e => { e.currentTarget.style.background = 'var(--tint-1)'; e.currentTarget.style.borderColor = 'var(--border)'; }}
         >
           <div
             style={{

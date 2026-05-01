@@ -130,7 +130,7 @@ export default function ChatPanel() {
         style={{
           padding: '16px 20px 20px',
           borderTop: '1px solid var(--border)',
-          background: 'rgba(0,0,0,0.2)',
+          background: 'var(--surface-soft)',
         }}
       >
         {/* Tool buttons */}
@@ -144,14 +144,14 @@ export default function ChatPanel() {
               key={label}
               style={{
                 padding: '6px 10px', borderRadius: 7,
-                background: 'rgba(255,255,255,0.04)',
+                background: 'var(--tint-2)',
                 border: '1px solid var(--border)',
                 color: 'var(--text-2)', cursor: 'pointer',
                 fontSize: 11.5, display: 'inline-flex', alignItems: 'center', gap: 5,
                 transition: 'all 0.15s',
               }}
-              onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; e.currentTarget.style.color = 'var(--text-1)'; }}
-              onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; e.currentTarget.style.color = 'var(--text-2)'; }}
+              onMouseEnter={e => { e.currentTarget.style.background = 'var(--tint-4)'; e.currentTarget.style.color = 'var(--text-1)'; }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'var(--tint-2)'; e.currentTarget.style.color = 'var(--text-2)'; }}
             >
               <Icon name={icon} size={12} /> {label}
             </button>
@@ -162,7 +162,7 @@ export default function ChatPanel() {
         <div
           style={{
             display: 'flex', alignItems: 'flex-end', gap: 10,
-            background: 'rgba(0,0,0,0.5)',
+            background: 'var(--input-bg-strong)',
             border: '1px solid var(--border-strong)',
             borderRadius: 14,
             padding: '12px 14px',
@@ -236,7 +236,7 @@ function Message({ msg }) {
           <div
             style={{
               display: 'flex', alignItems: 'center', gap: 6,
-              padding: '14px 16px', background: 'rgba(255,255,255,0.03)',
+              padding: '14px 16px', background: 'var(--tint-1)',
               border: '1px solid var(--border)', borderRadius: '14px 14px 14px 4px',
               width: 'fit-content',
             }}
@@ -287,7 +287,7 @@ function Message({ msg }) {
             border: '1px solid var(--border)',
             background: isUser
               ? 'linear-gradient(135deg, rgba(117,91,227,0.2), rgba(24,218,252,0.15))'
-              : 'rgba(255,255,255,0.03)',
+              : 'var(--tint-1)',
             borderColor: isUser ? 'var(--border-accent)' : 'var(--border)',
             color: 'var(--text-1)',
           }}
@@ -298,7 +298,7 @@ function Message({ msg }) {
               style={{
                 display: 'flex', alignItems: 'center', gap: 12,
                 padding: '10px 14px', borderRadius: 10,
-                background: 'rgba(0,0,0,0.35)',
+                background: 'var(--input-bg)',
                 border: '1px solid var(--border-strong)',
                 marginTop: 10,
               }}

@@ -16,7 +16,7 @@ export default function HeroPrompt() {
       style={{
         margin: '32px 0 40px',
         position: 'relative',
-        background: 'linear-gradient(180deg, rgba(22,22,32,0.8), rgba(15,15,23,0.6))',
+        background: 'var(--hero-bg)',
         border: '1px solid var(--border-strong)',
         borderRadius: 'var(--radius-xl)',
         padding: 28,
@@ -61,7 +61,7 @@ export default function HeroPrompt() {
         <div
           style={{
             display: 'flex', alignItems: 'center', gap: 10,
-            background: 'rgba(0,0,0,0.5)',
+            background: 'var(--input-bg-strong)',
             border: '1px solid var(--border-strong)',
             borderRadius: 'var(--radius)',
             padding: '14px 16px',
@@ -92,14 +92,14 @@ export default function HeroPrompt() {
           <button
             style={{
               width: 36, height: 36, borderRadius: 10,
-              background: 'rgba(255,255,255,0.06)',
+              background: 'var(--tint-3)',
               border: '1px solid var(--border-strong)',
               color: 'var(--text-1)', cursor: 'pointer',
               display: 'grid', placeItems: 'center',
               transition: 'all 0.15s',
             }}
             onMouseEnter={e => { e.currentTarget.style.background = 'var(--grad-brand)'; e.currentTarget.style.borderColor = 'transparent'; }}
-            onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; e.currentTarget.style.borderColor = 'var(--border-strong)'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'var(--tint-3)'; e.currentTarget.style.borderColor = 'var(--border-strong)'; }}
           >
             <Icon name="arrowRight" size={14} />
           </button>
@@ -113,14 +113,14 @@ export default function HeroPrompt() {
               onClick={() => setValue(chip.prompt)}
               style={{
                 padding: '7px 12px', borderRadius: 99,
-                background: 'rgba(255,255,255,0.04)',
+                background: 'var(--tint-2)',
                 border: '1px solid var(--border-strong)',
                 color: 'var(--text-2)', fontSize: 12.5,
                 cursor: 'pointer', transition: 'all 0.15s',
                 display: 'inline-flex', alignItems: 'center', gap: 6,
               }}
               onMouseEnter={e => { e.currentTarget.style.background = 'rgba(117,91,227,0.15)'; e.currentTarget.style.borderColor = 'var(--purple)'; e.currentTarget.style.color = 'var(--text-1)'; }}
-              onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; e.currentTarget.style.borderColor = 'var(--border-strong)'; e.currentTarget.style.color = 'var(--text-2)'; }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'var(--tint-2)'; e.currentTarget.style.borderColor = 'var(--border-strong)'; e.currentTarget.style.color = 'var(--text-2)'; }}
             >
               {chip.emoji} {chip.label}
             </button>

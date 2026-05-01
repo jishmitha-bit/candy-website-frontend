@@ -44,7 +44,7 @@ export default function WorkflowPanel() {
       <WfCard title="Uploaded file" titleIcon="file" badge="done" badgeLabel="Parsed">
         <div
           style={{
-            background: 'rgba(0,0,0,0.35)',
+            background: 'var(--input-bg)',
             border: '1px dashed var(--border-strong)',
             borderRadius: 'var(--radius)',
             padding: 14,
@@ -73,7 +73,7 @@ export default function WorkflowPanel() {
                     key={h}
                     style={{
                       textAlign: 'left', padding: '7px 8px',
-                      background: 'rgba(255,255,255,0.04)',
+                      background: 'var(--tint-2)',
                       color: 'var(--text-3)', fontWeight: 500,
                       borderBottom: '1px solid var(--border)',
                     }}
@@ -113,7 +113,7 @@ export default function WorkflowPanel() {
         <div
           style={{
             width: '100%', height: 6, borderRadius: 99,
-            background: 'rgba(255,255,255,0.05)', overflow: 'hidden', position: 'relative',
+            background: 'var(--tint-2)', overflow: 'hidden', position: 'relative',
           }}
         >
           <div
@@ -137,7 +137,7 @@ export default function WorkflowPanel() {
             <div
               key={label}
               style={{
-                background: 'rgba(0,0,0,0.25)',
+                background: 'var(--surface-soft)',
                 border: '1px solid var(--border)',
                 borderRadius: 10, padding: 12, textAlign: 'center',
               }}
@@ -241,7 +241,7 @@ function WfCard({ title, titleIcon, badge, badgeLabel, editBtn, children }) {
           <button
             style={{
               padding: '4px 8px', borderRadius: 7,
-              background: 'rgba(255,255,255,0.04)',
+              background: 'var(--tint-2)',
               border: '1px solid var(--border)',
               color: 'var(--text-2)', cursor: 'pointer',
               fontSize: 11.5, display: 'inline-flex', alignItems: 'center', gap: 5,

@@ -56,7 +56,7 @@ export default function CallTable({ calls, flashIds }) {
               key={icon}
               style={{
                 padding: '7px 12px', borderRadius: 8,
-                background: 'rgba(255,255,255,0.04)',
+                background: 'var(--tint-2)',
                 border: '1px solid var(--border-strong)',
                 color: 'var(--text-2)', cursor: 'pointer',
                 fontSize: 12.5, transition: 'all 0.15s',
@@ -82,7 +82,7 @@ export default function CallTable({ calls, flashIds }) {
                   color: 'var(--text-3)',
                   fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.12em',
                   fontWeight: 500,
-                  background: 'rgba(0,0,0,0.2)',
+                  background: 'var(--surface-soft)',
                   borderBottom: '1px solid var(--border)',
                 }}
               >
@@ -103,7 +103,7 @@ export default function CallTable({ calls, flashIds }) {
                   borderBottom: '1px solid var(--border)',
                   transition: 'background 0.15s',
                 }}
-                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.02)'; }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'var(--tint-1)'; }}
                 onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
               >
                 {/* Candidate */}
@@ -198,7 +198,7 @@ export default function CallTable({ calls, flashIds }) {
                           display: 'grid', placeItems: 'center',
                           transition: 'all 0.15s',
                         }}
-                        onMouseEnter={e => { e.currentTarget.style.color = 'var(--text-1)'; e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; e.currentTarget.style.borderColor = 'var(--border-strong)'; }}
+                        onMouseEnter={e => { e.currentTarget.style.color = 'var(--text-1)'; e.currentTarget.style.background = 'var(--tint-3)'; e.currentTarget.style.borderColor = 'var(--border-strong)'; }}
                         onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-3)'; e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = 'transparent'; }}
                       >
                         <Icon name={icon} size={12} />

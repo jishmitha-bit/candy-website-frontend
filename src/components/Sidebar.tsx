@@ -75,11 +75,11 @@ export default function Sidebar() {
           flexDirection: 'column',
           gap: 2,
           padding: expanded ? '20px 14px' : '20px 12px',
-          background: 'linear-gradient(180deg, #0c0c14 0%, #08080f 100%)',
+          background: 'var(--sidebar-bg)',
           borderRight: '1px solid var(--border)',
           overflowY: 'auto',
           overflowX: 'hidden',
-          boxShadow: expanded ? '8px 0 32px rgba(0,0,0,0.45)' : 'none',
+          boxShadow: expanded ? 'var(--shadow-rail)' : 'none',
           zIndex: 50,
         }}
       >
@@ -317,7 +317,7 @@ const styles = {
     fontWeight: 600,
     padding: '7px 12px',
     borderRadius: 8,
-    background: 'rgba(255,255,255,0.08)',
+    background: 'var(--tint-4)',
     border: '1px solid var(--border-strong)',
     color: 'var(--text-1)',
     cursor: 'pointer',

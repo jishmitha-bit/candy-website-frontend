@@ -95,7 +95,7 @@ export default function LiveCallsPage() {
             onClick={() => setActiveFilter(f.key)}
             style={{
               padding: '7px 12px', borderRadius: 99,
-              background: activeFilter === f.key ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.04)',
+              background: activeFilter === f.key ? 'var(--tint-4)' : 'var(--tint-2)',
               border: activeFilter === f.key ? '1px solid var(--border-strong)' : '1px solid var(--border)',
               color: activeFilter === f.key ? 'var(--text-1)' : 'var(--text-2)',
               cursor: 'pointer', fontSize: 12.5,
@@ -107,7 +107,7 @@ export default function LiveCallsPage() {
             <span
               style={{
                 fontSize: 10.5, padding: '1px 6px', borderRadius: 99,
-                background: activeFilter === f.key ? 'var(--purple)' : 'rgba(255,255,255,0.08)',
+                background: activeFilter === f.key ? 'var(--purple)' : 'var(--tint-4)',
                 color: activeFilter === f.key ? '#fff' : 'var(--text-3)',
               }}
             >
@@ -121,7 +121,7 @@ export default function LiveCallsPage() {
             key={icon}
             style={{
               padding: '7px 12px', borderRadius: 99,
-              background: 'rgba(255,255,255,0.04)',
+              background: 'var(--tint-2)',
               border: '1px solid var(--border)',
               color: 'var(--text-2)', cursor: 'pointer', fontSize: 12.5,
               display: 'inline-flex', alignItems: 'center', gap: 6,

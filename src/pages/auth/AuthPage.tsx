@@ -89,14 +89,14 @@ export default function AuthPage() {
                 placeholder="you@company.com"
                 required
                 style={{
-                  width: '100%', background: 'rgba(0,0,0,0.4)',
+                  width: '100%', background: 'var(--input-bg)',
                   border: '1px solid var(--border-strong)',
                   borderRadius: 'var(--radius)',
                   padding: '14px 16px', color: 'var(--text-1)',
                   fontSize: 14, outline: 'none',
                 }}
-                onFocus={e => { e.target.style.borderColor = 'var(--purple)'; e.target.style.boxShadow = '0 0 0 3px rgba(117,91,227,0.15)'; e.target.style.background = 'rgba(0,0,0,0.6)'; }}
-                onBlur={e  => { e.target.style.borderColor = 'var(--border-strong)'; e.target.style.boxShadow = 'none'; e.target.style.background = 'rgba(0,0,0,0.4)'; }}
+                onFocus={e => { e.target.style.borderColor = 'var(--purple)'; e.target.style.boxShadow = '0 0 0 3px rgba(117,91,227,0.15)'; e.target.style.background = 'var(--input-bg-strong)'; }}
+                onBlur={e  => { e.target.style.borderColor = 'var(--border-strong)'; e.target.style.boxShadow = 'none'; e.target.style.background = 'var(--input-bg)'; }}
               />
             </div>
 
@@ -116,14 +116,14 @@ export default function AuthPage() {
                 placeholder="Enter your password"
                 required
                 style={{
-                  width: '100%', background: 'rgba(0,0,0,0.4)',
+                  width: '100%', background: 'var(--input-bg)',
                   border: '1px solid var(--border-strong)',
                   borderRadius: 'var(--radius)',
                   padding: '14px 16px', color: 'var(--text-1)',
                   fontSize: 14, outline: 'none',
                 }}
-                onFocus={e => { e.target.style.borderColor = 'var(--purple)'; e.target.style.boxShadow = '0 0 0 3px rgba(117,91,227,0.15)'; e.target.style.background = 'rgba(0,0,0,0.6)'; }}
-                onBlur={e  => { e.target.style.borderColor = 'var(--border-strong)'; e.target.style.boxShadow = 'none'; e.target.style.background = 'rgba(0,0,0,0.4)'; }}
+                onFocus={e => { e.target.style.borderColor = 'var(--purple)'; e.target.style.boxShadow = '0 0 0 3px rgba(117,91,227,0.15)'; e.target.style.background = 'var(--input-bg-strong)'; }}
+                onBlur={e  => { e.target.style.borderColor = 'var(--border-strong)'; e.target.style.boxShadow = 'none'; e.target.style.background = 'var(--input-bg)'; }}
               />
             </div>
 
@@ -215,7 +215,7 @@ export default function AuthPage() {
                 key={label}
                 type="button"
                 style={{
-                  background: 'rgba(255,255,255,0.03)',
+                  background: 'var(--tint-1)',
                   border: '1px solid var(--border-strong)',
                   color: 'var(--text-1)',
                   padding: 12,
@@ -225,8 +225,8 @@ export default function AuthPage() {
                   fontSize: 13,
                   transition: 'all 0.2s',
                 }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--border-accent)'; e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border-strong)'; e.currentTarget.style.background = 'rgba(255,255,255,0.03)'; }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--border-accent)'; e.currentTarget.style.background = 'var(--tint-3)'; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border-strong)'; e.currentTarget.style.background = 'var(--tint-1)'; }}
               >
                 {icon}
                 {label}

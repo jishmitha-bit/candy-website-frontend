@@ -24,7 +24,7 @@ export default function ToastHost() {
             display: 'flex', alignItems: 'center', gap: 10,
             fontSize: 13,
             backdropFilter: 'blur(20px)',
-            boxShadow: '0 20px 40px -10px rgba(0,0,0,0.6)',
+            boxShadow: 'var(--shadow-deep)',
             minWidth: 280,
             color: 'var(--text-1)',
             pointerEvents: 'auto',

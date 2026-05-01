@@ -9,8 +9,21 @@ const crumbMap = {
 };
 
 export default function Topbar() {
-  const { currentView, addToast } = useApp();
+  const { currentView, addToast, theme, toggleTheme } = useApp();
   const crumbs = crumbMap[currentView] ?? crumbMap.dashboard;
+
+  // Shared style for every action button on the right side of the header.
+  const iconBtnStyle = {
+    width: 38, height: 38,
+    background: 'transparent',
+    border: '1px solid var(--border)',
+    borderRadius: 10,
+    color: 'var(--text-2)',
+    display: 'grid', placeItems: 'center',
+    cursor: 'pointer', position: 'relative',
+    transition: 'all 0.15s',
+  };
+
 
   // ⌘K shortcut
   useEffect(() => {
@@ -33,7 +46,7 @@ export default function Topbar() {
         alignItems: 'center',
         gap: 16,
         borderBottom: '1px solid var(--border)',
-        background: 'rgba(10,10,15,0.6)',
+        background: 'var(--surface)',
         backdropFilter: 'blur(20px)',
         position: 'sticky',
         top: 0,
@@ -56,7 +69,7 @@ export default function Topbar() {
         style={{
           flex: 1, maxWidth: 520,
           display: 'flex', alignItems: 'center', gap: 10,
-          background: 'rgba(0,0,0,0.35)',
+          background: 'var(--input-bg)',
           border: '1px solid var(--border-strong)',
           borderRadius: 10,
           padding: '9px 14px',
@@ -85,7 +98,7 @@ export default function Topbar() {
             fontFamily: "'JetBrains Mono', monospace",
             fontSize: 10, padding: '3px 6px',
             border: '1px solid var(--border-strong)', borderRadius: 5,
-            color: 'var(--text-3)', background: 'rgba(255,255,255,0.03)',
+            color: 'var(--text-3)', background: 'var(--tint-1)',
           }}
         >
           ⌘ K
@@ -94,26 +107,17 @@ export default function Topbar() {
 
       {/* Right actions */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginLeft: 'auto' }}>
+        {/* Stub buttons (zap + bell). Theme toggle is a real action; help comes after it. */}
         {[
           { icon: 'zap',  tip: "What's new" },
           { icon: 'bell', tip: 'Notifications', dot: true },
-          { icon: 'help', tip: 'Help' },
         ].map(({ icon, tip, dot }) => (
           <button
             key={icon}
             className="tooltip-wrap"
             data-tip={tip}
             onClick={() => addToast(`${tip} — coming soon`, 'info')}
-            style={{
-              width: 38, height: 38,
-              background: 'transparent',
-              border: '1px solid var(--border)',
-              borderRadius: 10,
-              color: 'var(--text-2)',
-              display: 'grid', placeItems: 'center',
-              cursor: 'pointer', position: 'relative',
-              transition: 'all 0.15s',
-            }}
+            style={iconBtnStyle}
           >
             <Icon name={icon} size={16} />
             {dot && (
@@ -128,6 +132,27 @@ export default function Topbar() {
             )}
           </button>
         ))}
+
+        {/* Theme toggle — sits immediately to the right of the bell */}
+        <button
+          className="tooltip-wrap"
+          data-tip={theme === 'dark' ? 'Switch to light' : 'Switch to dark'}
+          onClick={toggleTheme}
+          aria-label="Toggle color theme"
+          style={iconBtnStyle}
+        >
+          <Icon name={theme === 'dark' ? 'sun' : 'moon'} size={16} />
+        </button>
+
+        {/* Help */}
+        <button
+          className="tooltip-wrap"
+          data-tip="Help"
+          onClick={() => addToast('Help — coming soon', 'info')}
+          style={iconBtnStyle}
+        >
+          <Icon name="help" size={16} />
+        </button>
 
         <div
           className="tooltip-wrap"
