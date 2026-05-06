@@ -1,9 +1,6 @@
-import AgentShell from '../../components/agent/AgentShell';
-import KnowledgeBase from '../../components/agent/KnowledgeBase';
-import PromptEditor from '../../components/agent/PromptEditor';
-import TestPanel from '../../components/agent/TestPanel';
+import AgentWorkspace from '../../components/agent/AgentWorkspace';
 
-const TINT = 'pink';
+const TINT = 'pink' as const;
 
 const DEFAULT_PROMPT = `You are an E-commerce voice agent for an online store.
 
@@ -22,20 +19,13 @@ const PRESETS = [
 
 export default function EcommerceAgent() {
   return (
-    <AgentShell category="E-commerce" icon="cart" tint={TINT}>
-      <div style={layout}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-          <KnowledgeBase tint={TINT} />
-          <PromptEditor tint={TINT} defaultValue={DEFAULT_PROMPT} presets={PRESETS} />
-        </div>
-        <TestPanel
-          tint={TINT}
-          category="E-commerce"
-          agentReply="Sure — I can pull up that order. What's your order number?"
-        />
-      </div>
-    </AgentShell>
+    <AgentWorkspace
+      slug="ecom"
+      category="E-commerce"
+      icon="cart"
+      tint={TINT}
+      defaultPrompt={DEFAULT_PROMPT}
+      presets={PRESETS}
+    />
   );
 }
-
-const layout = { display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 380px', gap: 20 };

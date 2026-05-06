@@ -1,6 +1,30 @@
 import { useApp } from '../context/AppContext';
 import Icon from '../assets/icons';
 
+const KIND_STYLE: Record<string, { bg: string; fg: string; iconBg: string; iconFg: string; icon: string }> = {
+  success: {
+    bg:     'rgba(22,22,32,0.96)',
+    fg:     '#ffffff',
+    iconBg: 'rgba(76,175,80,0.18)',
+    iconFg: '#7ad57f',
+    icon:   'check',
+  },
+  error: {
+    bg:     'rgba(40,18,24,0.96)',
+    fg:     '#fff0f0',
+    iconBg: 'rgba(255,90,120,0.18)',
+    iconFg: '#ff6b80',
+    icon:   'x',
+  },
+  info: {
+    bg:     'rgba(18,28,40,0.96)',
+    fg:     '#f0f6ff',
+    iconBg: 'rgba(24,218,252,0.18)',
+    iconFg: '#5fdcff',
+    icon:   'zap',
+  },
+};
+
 export default function ToastHost() {
   const { toasts } = useApp();
 
@@ -12,37 +36,47 @@ export default function ToastHost() {
         pointerEvents: 'none',
       }}
     >
-      {toasts.map(t => (
-        <div
-          key={t.id}
-          className="toast-in"
-          style={{
-            background: 'rgba(22,22,32,0.95)',
-            border: '1px solid var(--border-strong)',
-            borderRadius: 'var(--radius)',
-            padding: '12px 16px',
-            display: 'flex', alignItems: 'center', gap: 10,
-            fontSize: 13,
-            backdropFilter: 'blur(20px)',
-            boxShadow: 'var(--shadow-deep)',
-            minWidth: 280,
-            color: 'var(--text-1)',
-            pointerEvents: 'auto',
-          }}
-        >
+      {toasts.map(t => {
+        // Kind comes from addToast(msg, 'success' | 'error' | 'info').
+        // Default to success when an unknown kind sneaks through so it
+        // never renders as black-on-black.
+        const k = (t as any).kind as string | undefined;
+        const style = KIND_STYLE[k || 'success'] || KIND_STYLE.success;
+        return (
           <div
+            key={t.id}
+            className="toast-in"
+            role={k === 'error' ? 'alert' : 'status'}
             style={{
-              width: 22, height: 22, borderRadius: '50%',
-              display: 'grid', placeItems: 'center',
-              background: 'rgba(76,175,80,0.15)', color: 'var(--green)',
-              flexShrink: 0,
+              background: style.bg,
+              border: '1px solid rgba(255,255,255,0.08)',
+              borderRadius: 'var(--radius)',
+              padding: '12px 16px',
+              display: 'flex', alignItems: 'center', gap: 10,
+              fontSize: 13,
+              lineHeight: 1.4,
+              backdropFilter: 'blur(20px)',
+              boxShadow: '0 18px 40px -16px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.04)',
+              minWidth: 280,
+              maxWidth: 420,
+              color: style.fg,
+              pointerEvents: 'auto',
             }}
           >
-            <Icon name="check" size={12} />
+            <div
+              style={{
+                width: 22, height: 22, borderRadius: '50%',
+                display: 'grid', placeItems: 'center',
+                background: style.iconBg, color: style.iconFg,
+                flexShrink: 0,
+              }}
+            >
+              <Icon name={style.icon} size={12} />
+            </div>
+            <span style={{ color: style.fg }}>{t.msg}</span>
           </div>
-          <span>{t.msg}</span>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }

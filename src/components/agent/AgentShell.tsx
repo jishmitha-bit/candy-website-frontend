@@ -2,15 +2,15 @@
  * AgentShell — the full-screen frame every voice-agent page renders inside.
  *
  *   ┌─ header ─────────────────────────────────────────┐
- *   │ ← Back to dashboard       [icon] Category Agent   │
- *   │                                  [theme] [×]      │
+ *   │ ← Back            [icon] Category Agent · status │
+ *   │                          [Publish] [theme] [×]   │
  *   ├──────────────────────────────────────────────────┤
  *   │  {children}                                       │
  *   └──────────────────────────────────────────────────┘
  *
- * Each agent's index.tsx owns the body — pass the KnowledgeBase / PromptEditor
- * / TestPanel widgets as children, or replace them entirely as the agent
- * grows its own bespoke UI.
+ * Optional props let the parent show a Publish button that knows about the
+ * current agent's status (so we can grey it out when the prompt isn't compiled
+ * yet, etc.).
  */
 import { useApp } from '../../context/AppContext';
 import { useTheme } from '../../hooks/useTheme';
@@ -34,7 +34,23 @@ const tintGlow = {
   pink:   'rgba(230,90,255,0.30)',
 };
 
-export default function AgentShell({ category, icon, tint = 'purple', children }) {
+interface Props {
+  category: string;
+  icon: string;
+  tint?: keyof typeof tintColor;
+  status?: string | null;
+  onPublish?: () => void;
+  publishing?: boolean;
+  publishDisabled?: boolean;
+  publishHint?: string;
+  children: any;
+}
+
+export default function AgentShell({
+  category, icon, tint = 'purple',
+  status, onPublish, publishing, publishDisabled, publishHint,
+  children,
+}: Props) {
   const { showView, setActiveNav } = useApp();
   const { theme, toggleTheme } = useTheme();
 
@@ -52,7 +68,6 @@ export default function AgentShell({ category, icon, tint = 'purple', children }
         zIndex: 1,
       }}
     >
-      {/* Header */}
       <header
         style={{
           position: 'sticky',
@@ -99,12 +114,55 @@ export default function AgentShell({ category, icon, tint = 'purple', children }
               </div>
               <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--text-1)' }}>
                 {category}
+                {status && (
+                  <span
+                    style={{
+                      marginLeft: 10,
+                      fontSize: 10.5, fontWeight: 600, padding: '3px 8px',
+                      borderRadius: 99,
+                      letterSpacing: '0.04em', textTransform: 'uppercase',
+                      background: status === 'published' ? 'rgba(76,175,80,0.15)'
+                              : status === 'ready_to_test' ? 'rgba(24,218,252,0.15)'
+                              : 'var(--tint-2)',
+                      color: status === 'published' ? 'var(--green)'
+                          : status === 'ready_to_test' ? 'var(--blue)'
+                          : 'var(--text-3)',
+                      border: '1px solid var(--border)',
+                    }}
+                  >
+                    {status.replace(/_/g, ' ')}
+                  </span>
+                )}
               </div>
             </div>
           </div>
         </div>
 
-        <div style={{ display: 'flex', gap: 8 }}>
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+          {onPublish && (
+            <button
+              onClick={onPublish}
+              disabled={publishing || publishDisabled}
+              title={publishDisabled ? (publishHint || 'Save requirements first') : undefined}
+              style={{
+                padding: '8px 14px', borderRadius: 9,
+                border: 'none',
+                background: publishDisabled
+                  ? 'var(--tint-2)'
+                  : 'var(--grad-brand)',
+                color: publishDisabled ? 'var(--text-3)' : '#fff',
+                fontSize: 13, fontWeight: 600,
+                cursor: publishing || publishDisabled ? 'not-allowed' : 'pointer',
+                opacity: publishing ? 0.7 : 1,
+                boxShadow: publishDisabled ? 'none' : '0 6px 16px -6px rgba(117,91,227,0.55)',
+                display: 'inline-flex', alignItems: 'center', gap: 6,
+                transition: 'all 0.15s',
+              }}
+            >
+              {publishing ? 'Publishing…' : status === 'published' ? 'Re-publish' : 'Publish'}
+              {!publishing && <Icon name="zap" size={12} />}
+            </button>
+          )}
           <button
             onClick={toggleTheme}
             className="tooltip-wrap"

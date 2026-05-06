@@ -1,9 +1,6 @@
-import AgentShell from '../../components/agent/AgentShell';
-import KnowledgeBase from '../../components/agent/KnowledgeBase';
-import PromptEditor from '../../components/agent/PromptEditor';
-import TestPanel from '../../components/agent/TestPanel';
+import AgentWorkspace from '../../components/agent/AgentWorkspace';
 
-const TINT = 'blue';
+const TINT = 'blue' as const;
 
 const DEFAULT_PROMPT = `You are a Marketing voice agent running outbound campaigns.
 
@@ -22,20 +19,13 @@ const PRESETS = [
 
 export default function MarketingAgent() {
   return (
-    <AgentShell category="Marketing" icon="broadcast" tint={TINT}>
-      <div style={layout}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-          <KnowledgeBase tint={TINT} />
-          <PromptEditor tint={TINT} defaultValue={DEFAULT_PROMPT} presets={PRESETS} />
-        </div>
-        <TestPanel
-          tint={TINT}
-          category="Marketing"
-          agentReply="Hey! Quick question — on a scale of 0 to 10, how likely are you to recommend us to a friend?"
-        />
-      </div>
-    </AgentShell>
+    <AgentWorkspace
+      slug="mkt"
+      category="Marketing"
+      icon="broadcast"
+      tint={TINT}
+      defaultPrompt={DEFAULT_PROMPT}
+      presets={PRESETS}
+    />
   );
 }
-
-const layout = { display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 380px', gap: 20 };

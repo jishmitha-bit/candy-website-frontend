@@ -15,9 +15,17 @@ const crumbMap = {
 };
 
 export default function Topbar() {
-  const { currentView, addToast } = useApp();
+  const { currentView, addToast, user, signOut } = useApp();
   const { theme, toggleTheme } = useTheme();
   const crumbs = crumbMap[currentView] ?? crumbMap.dashboard;
+
+  const displayName = user?.full_name || user?.email?.split('@')[0] || 'Guest';
+  const initials = displayName
+    .split(/[\s.@_-]+/)
+    .map(s => s[0]?.toUpperCase())
+    .filter(Boolean)
+    .slice(0, 2)
+    .join('') || 'GS';
 
   // Shared style for every action button on the right side of the header.
   const iconBtnStyle = {
@@ -161,9 +169,14 @@ export default function Topbar() {
           <Icon name="help" size={16} />
         </button>
 
-        <div
+        <button
           className="tooltip-wrap"
-          data-tip="Hello (hello@spacemarvel.ai)"
+          data-tip={user ? `${displayName} · click to sign out` : 'Sign in'}
+          onClick={() => {
+            if (user) {
+              if (window.confirm(`Sign out ${user.email}?`)) signOut();
+            }
+          }}
           style={{
             width: 38, height: 38, borderRadius: 10,
             background: 'var(--grad-pink)',
@@ -173,8 +186,8 @@ export default function Topbar() {
             border: '1px solid var(--border-strong)',
           }}
         >
-          HS
-        </div>
+          {initials}
+        </button>
       </div>
     </header>
   );

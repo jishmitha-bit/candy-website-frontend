@@ -1,38 +1,107 @@
+/**
+ * ChatPanel — wired to the real /v1/agents/{hr_agent_id}/demo flow.
+ * On mount we ensure an HR agent exists, then open a demo session lazily on
+ * the first user turn. The Atlas seed messages stay (they're cosmetic).
+ */
 import { useRef, useEffect, useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import Icon from '../../assets/icons';
+import { findAgentForSlug, createAgent, type Agent } from '../../api/agents';
+import { startDemo, sendDemoTurn } from '../../api/demo';
+import { ApiError, getToken } from '../../api/client';
 
 export default function ChatPanel() {
-  const { chatMessages, setChatMessages } = useApp();
+  const { chatMessages, setChatMessages, addToast } = useApp();
   const [input, setInput] = useState('');
-  const bodyRef = useRef(null);
+  const [agent, setAgent] = useState<Agent | null>(null);
+  const [sessionId, setSessionId] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const bodyRef = useRef<HTMLDivElement>(null);
+  const initRef = useRef(false);
 
-  // Scroll to bottom on new messages
   useEffect(() => {
     if (bodyRef.current) bodyRef.current.scrollTop = bodyRef.current.scrollHeight;
   }, [chatMessages]);
 
-  function sendChat() {
+  useEffect(() => {
+    if (initRef.current) return;
+    initRef.current = true;
+    if (!getToken()) return;
+    (async () => {
+      try {
+        const a = await findAgentForSlug('hr');
+        if (a) setAgent(a);
+        // If none exists, leave agent=null. The composer is disabled below
+        // and the header shows "No HR agent — create one" until the user
+        // clicks the create button.
+      } catch (e) {
+        const msg = e instanceof ApiError ? e.message : (e as Error).message;
+        addToast(`Couldn't load HR agent: ${msg}`, 'error');
+      }
+    })();
+  }, [addToast]);
+
+  async function createHrAgent() {
+    try {
+      const a = await createAgent({ use_case_slug: 'hr', name: 'HR Recruiting Agent' });
+      setAgent(a);
+      addToast('Created HR agent', 'success');
+    } catch (e) {
+      const msg = e instanceof ApiError ? e.message : (e as Error).message;
+      addToast(`Couldn't create HR agent: ${msg}`, 'error');
+    }
+  }
+
+  async function ensureSession(): Promise<string | null> {
+    if (sessionId) return sessionId;
+    if (!agent) return null;
+    try {
+      const s = await startDemo(agent.id);
+      setSessionId(s.demo_session_id);
+      return s.demo_session_id;
+    } catch (e) {
+      const msg = e instanceof ApiError ? e.message : (e as Error).message;
+      addToast(`Couldn't start session: ${msg}`, 'error');
+      return null;
+    }
+  }
+
+  async function sendChat() {
     const text = input.trim();
-    if (!text) return;
+    if (!text || busy) return;
+    if (!agent) {
+      addToast('HR agent isn\'t ready yet — try again in a moment.', 'info');
+      return;
+    }
     const now  = new Date();
     const time = now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
     setInput('');
+    setBusy(true);
 
-    const userMsg = { role: 'user', text, time };
-    const typing  = { role: 'typing' };
-    setChatMessages(prev => [...prev, userMsg, typing]);
+    setChatMessages(prev => [
+      ...prev,
+      { role: 'user', text, time },
+      { role: 'typing' },
+    ]);
 
-    setTimeout(() => {
+    try {
+      const sid = await ensureSession();
+      if (!sid) throw new Error('No session');
+      const res = await sendDemoTurn(agent.id, sid, text);
+      const replyTime = new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
       setChatMessages(prev => [
         ...prev.filter(m => m.role !== 'typing'),
-        {
-          role: 'ai',
-          text: "Understood. I'll apply that to the active campaign and summarize results once the next batch completes. You can track progress in the panel on the right →",
-          time,
-        },
+        { role: 'ai', text: res.agent_response || '(empty response)', time: replyTime },
       ]);
-    }, 1400);
+    } catch (e) {
+      const msg = e instanceof ApiError ? e.message : (e as Error).message;
+      setChatMessages(prev => [
+        ...prev.filter(m => m.role !== 'typing'),
+        { role: 'ai', text: `⚠️ ${msg}`, time },
+      ]);
+    } finally {
+      setBusy(false);
+    }
   }
 
   function handleKeyDown(e) {
@@ -53,7 +122,6 @@ export default function ChatPanel() {
         backdropFilter: 'blur(20px)',
       }}
     >
-      {/* Chat header */}
       <div
         style={{
           padding: '18px 22px',
@@ -77,16 +145,33 @@ export default function ChatPanel() {
             style={{
               position: 'absolute', bottom: -2, right: -2,
               width: 12, height: 12, borderRadius: '50%',
-              background: 'var(--green)',
+              background: agent ? 'var(--green)' : 'var(--amber)',
               border: '2px solid var(--bg-1)',
-              boxShadow: '0 0 8px var(--green)',
+              boxShadow: `0 0 8px ${agent ? 'var(--green)' : 'var(--amber)'}`,
             }}
           />
         </div>
         <div style={{ flex: 1 }}>
           <h4 style={{ fontSize: 14.5, fontWeight: 600, color: 'var(--text-1)' }}>Atlas · HR Assistant</h4>
-          <p style={{ fontSize: 11.5, color: 'var(--text-3)', marginTop: 2 }}>Powered by Metaspace AI · Online</p>
+          <p style={{ fontSize: 11.5, color: 'var(--text-3)', marginTop: 2 }}>
+            {agent ? `Live · agent ${agent.id.slice(0, 8)}` : 'No HR agent yet — create one to start chatting'}
+          </p>
         </div>
+        {!agent && (
+          <button
+            onClick={createHrAgent}
+            style={{
+              padding: '7px 12px', borderRadius: 8,
+              background: 'var(--grad-brand)', color: '#fff',
+              border: 'none', cursor: 'pointer',
+              fontSize: 12, fontWeight: 600,
+              display: 'inline-flex', alignItems: 'center', gap: 5,
+              boxShadow: '0 4px 10px -3px rgba(117,91,227,0.5)',
+            }}
+          >
+            <Icon name="plus" size={11} /> Create HR agent
+          </button>
+        )}
         <div style={{ display: 'flex', gap: 6 }}>
           {[
             { icon: 'settings', tip: 'Settings' },
@@ -111,7 +196,6 @@ export default function ChatPanel() {
         </div>
       </div>
 
-      {/* Messages */}
       <div
         ref={bodyRef}
         style={{
@@ -125,7 +209,6 @@ export default function ChatPanel() {
         {chatMessages.map((m, i) => <Message key={i} msg={m} />)}
       </div>
 
-      {/* Composer */}
       <div
         style={{
           padding: '16px 20px 20px',
@@ -133,7 +216,6 @@ export default function ChatPanel() {
           background: 'var(--surface-soft)',
         }}
       >
-        {/* Tool buttons */}
         <div style={{ display: 'flex', gap: 6, marginBottom: 10 }}>
           {[
             { icon: 'paperclip', label: 'Attach' },
@@ -150,15 +232,12 @@ export default function ChatPanel() {
                 fontSize: 11.5, display: 'inline-flex', alignItems: 'center', gap: 5,
                 transition: 'all 0.15s',
               }}
-              onMouseEnter={e => { e.currentTarget.style.background = 'var(--tint-4)'; e.currentTarget.style.color = 'var(--text-1)'; }}
-              onMouseLeave={e => { e.currentTarget.style.background = 'var(--tint-2)'; e.currentTarget.style.color = 'var(--text-2)'; }}
             >
               <Icon name={icon} size={12} /> {label}
             </button>
           ))}
         </div>
 
-        {/* Input field */}
         <div
           style={{
             display: 'flex', alignItems: 'flex-end', gap: 10,
@@ -168,14 +247,13 @@ export default function ChatPanel() {
             padding: '12px 14px',
             transition: 'border-color 0.15s',
           }}
-          onFocus={e  => { e.currentTarget.style.borderColor = 'var(--purple)'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(117,91,227,0.12)'; }}
-          onBlur={e   => { e.currentTarget.style.borderColor = 'var(--border-strong)'; e.currentTarget.style.boxShadow = 'none'; }}
         >
           <textarea
             value={input}
             onChange={e => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Ask or assign a task…"
+            placeholder={agent ? 'Ask or assign a task…' : 'Connecting to HR agent…'}
+            disabled={!agent || busy}
             rows={1}
             style={{
               flex: 1, background: 'transparent', border: 'none', outline: 'none',
@@ -198,16 +276,17 @@ export default function ChatPanel() {
             </button>
             <button
               onClick={sendChat}
+              disabled={!agent || busy || !input.trim()}
               style={{
                 width: 36, height: 36, borderRadius: 10,
                 background: 'var(--grad-brand)', color: '#fff',
-                border: 'none', cursor: 'pointer',
+                border: 'none',
+                cursor: (!agent || busy || !input.trim()) ? 'not-allowed' : 'pointer',
+                opacity: (!agent || busy || !input.trim()) ? 0.5 : 1,
                 display: 'grid', placeItems: 'center',
                 boxShadow: '0 6px 16px -4px rgba(117,91,227,0.5)',
                 transition: 'transform 0.15s',
               }}
-              onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.05)'; }}
-              onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; }}
             >
               <Icon name="send" size={14} />
             </button>
@@ -290,6 +369,7 @@ function Message({ msg }) {
               : 'var(--tint-1)',
             borderColor: isUser ? 'var(--border-accent)' : 'var(--border)',
             color: 'var(--text-1)',
+            whiteSpace: 'pre-wrap',
           }}
         >
           {msg.text}

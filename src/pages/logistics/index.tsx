@@ -1,9 +1,6 @@
-import AgentShell from '../../components/agent/AgentShell';
-import KnowledgeBase from '../../components/agent/KnowledgeBase';
-import PromptEditor from '../../components/agent/PromptEditor';
-import TestPanel from '../../components/agent/TestPanel';
+import AgentWorkspace from '../../components/agent/AgentWorkspace';
 
-const TINT = 'amber';
+const TINT = 'amber' as const;
 
 const DEFAULT_PROMPT = `You are a Logistics voice agent coordinating deliveries.
 
@@ -22,20 +19,13 @@ const PRESETS = [
 
 export default function LogisticsAgent() {
   return (
-    <AgentShell category="Logistics" icon="truck" tint={TINT}>
-      <div style={layout}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-          <KnowledgeBase tint={TINT} />
-          <PromptEditor tint={TINT} defaultValue={DEFAULT_PROMPT} presets={PRESETS} />
-        </div>
-        <TestPanel
-          tint={TINT}
-          category="Logistics"
-          agentReply="Got it. Your package is currently 3 stops away — about 25 minutes out. Does that still work?"
-        />
-      </div>
-    </AgentShell>
+    <AgentWorkspace
+      slug="log"
+      category="Logistics"
+      icon="truck"
+      tint={TINT}
+      defaultPrompt={DEFAULT_PROMPT}
+      presets={PRESETS}
+    />
   );
 }
-
-const layout = { display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 380px', gap: 20 };

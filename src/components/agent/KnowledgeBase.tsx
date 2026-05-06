@@ -1,53 +1,128 @@
 /**
- * KnowledgeBase — drag-and-drop or click-to-upload widget.
+ * KnowledgeBase — drag-and-drop / click-to-upload widget wired to the real
+ * Candy-Agents backend. On drop:
+ *   1. POST /v1/agents/{agent_id}/knowledge/uploads (multipart)
+ *   2. Re-fetch the document list to show its current status (parsing /
+ *      classified / embedded / failed).
  *
- * The "parse" step is simulated locally — files added to React state with
- * a fake KB / 248-row count. Wire this to your real ingestion pipeline by
- * replacing the addFiles() body.
+ * Each row has an X to delete the doc via DELETE /v1/agents/{id}/knowledge/{kb_id}.
+ * The button shows a busy state and surfaces any backend error in a toast.
  */
 import { useState, useRef } from 'react';
 import Icon from '../../assets/icons';
+import { uploadKnowledgeFile, deleteKnowledge, type KnowledgeDoc } from '../../api/knowledge';
+import { ApiError } from '../../api/client';
+import { useApp } from '../../context/AppContext';
 
 const tintColor = {
   purple: 'var(--purple-hi)', blue: 'var(--blue)', teal: 'var(--teal)',
   green: 'var(--green)', amber: 'var(--amber)', pink: 'var(--pink)',
 };
 
-function formatSize(bytes) {
+function formatSize(bytes: number) {
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
-export default function KnowledgeBase({ tint = 'purple' }) {
-  const [files, setFiles] = useState([]);
+function statusLabel(d: KnowledgeDoc): string {
+  if (d.status === 'embedded' || d.status === 'completed') return 'Indexed';
+  if (d.status === 'failed') return 'Failed';
+  if (d.status === 'parsing' || d.status === 'queued' || d.status === 'classifying' || d.status === 'embedding')
+    return d.status.charAt(0).toUpperCase() + d.status.slice(1) + '…';
+  return d.status;
+}
+
+interface Props {
+  tint?: keyof typeof tintColor;
+  agentId: string | null;
+  docs: KnowledgeDoc[];
+  refreshDocs: () => Promise<void>;
+}
+
+export default function KnowledgeBase({ tint = 'purple', agentId, docs, refreshDocs }: Props) {
+  const { addToast } = useApp();
   const [dragOver, setDragOver] = useState(false);
-  const inputRef = useRef(null);
+  const [uploading, setUploading] = useState<string[]>([]);
+  const [deletingIds, setDeletingIds] = useState<Set<string>>(new Set());
+  const [bulkDeleting, setBulkDeleting] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  function addFiles(list) {
+  async function addFiles(list: FileList | null) {
     if (!list || list.length === 0) return;
-    const next = Array.from(list).map(f => ({
-      id: `${Date.now()}-${f.name}`,
-      name: f.name,
-      size: f.size,
-      status: 'parsing',
-    }));
-    setFiles(prev => [...prev, ...next]);
+    if (!agentId) {
+      addToast('Agent not ready yet — try again in a moment.', 'info');
+      return;
+    }
 
-    // Simulate parse → indexed transition
-    next.forEach((f, i) => {
-      setTimeout(() => {
-        setFiles(prev =>
-          prev.map(x =>
-            x.id === f.id ? { ...x, status: 'indexed' } : x
-          )
-        );
-      }, 700 + i * 250);
-    });
+    const files = Array.from(list);
+    setUploading(prev => [...prev, ...files.map(f => f.name)]);
+
+    for (const f of files) {
+      try {
+        await uploadKnowledgeFile(agentId, f);
+        addToast(`Uploaded ${f.name}`, 'success');
+      } catch (e) {
+        const msg = e instanceof ApiError ? e.message : (e as Error).message;
+        console.error('[KB] upload failed', e);
+        addToast(`Failed to upload ${f.name}: ${msg}`, 'error');
+      } finally {
+        setUploading(prev => prev.filter(n => n !== f.name));
+      }
+    }
+
+    await refreshDocs();
   }
 
-  function removeFile(id) {
-    setFiles(prev => prev.filter(f => f.id !== id));
+  async function handleDelete(d: KnowledgeDoc, ev?: React.MouseEvent) {
+    // Always log so we can confirm the click is reaching React.
+    console.log('[KB] delete clicked', { agentId, docId: d.id, filename: d.filename });
+    if (ev) {
+      ev.preventDefault();
+      ev.stopPropagation();
+    }
+    if (!agentId) {
+      addToast('No agent selected — pick one above before deleting.', 'info');
+      return;
+    }
+    if (deletingIds.has(d.id)) return;
+    setDeletingIds(prev => new Set(prev).add(d.id));
+    try {
+      console.log('[KB] sending DELETE', `/v1/agents/${agentId}/knowledge/${d.id}`);
+      await deleteKnowledge(agentId, d.id);
+      addToast(`Removed ${d.filename}`, 'success');
+      await refreshDocs();
+    } catch (e) {
+      const msg = e instanceof ApiError ? `${e.status}: ${e.message}` : (e as Error).message;
+      console.error('[KB] delete failed', e);
+      addToast(`Could not remove ${d.filename}: ${msg}`, 'error');
+    } finally {
+      setDeletingIds(prev => {
+        const n = new Set(prev);
+        n.delete(d.id);
+        return n;
+      });
+    }
+  }
+
+  async function deleteAll() {
+    if (!agentId || bulkDeleting) return;
+    if (docs.length === 0) return;
+    if (!window.confirm(`Delete all ${docs.length} files from this agent's knowledge base?`)) return;
+    setBulkDeleting(true);
+    let ok = 0, fail = 0;
+    for (const d of docs) {
+      try {
+        await deleteKnowledge(agentId, d.id);
+        ok++;
+      } catch (e) {
+        console.error('[KB] bulk delete failed for', d.id, e);
+        fail++;
+      }
+    }
+    await refreshDocs();
+    setBulkDeleting(false);
+    addToast(fail === 0 ? `Removed all ${ok} files` : `Removed ${ok}, failed ${fail}`, fail === 0 ? 'success' : 'error');
   }
 
   return (
@@ -57,7 +132,25 @@ export default function KnowledgeBase({ tint = 'purple' }) {
           <Icon name="layers" size={16} style={{ color: tintColor[tint] }} />
           <h3 style={sectionTitle}>Knowledge base</h3>
         </div>
-        <span style={pill}>{files.length} {files.length === 1 ? 'file' : 'files'}</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <span style={pill}>{docs.length} {docs.length === 1 ? 'file' : 'files'}</span>
+          {docs.length > 0 && (
+            <button
+              onClick={deleteAll}
+              disabled={bulkDeleting}
+              style={{
+                fontSize: 11, padding: '4px 9px', borderRadius: 7,
+                background: 'rgba(255,90,120,0.1)',
+                border: '1px solid rgba(255,90,120,0.4)',
+                color: 'var(--red)',
+                cursor: bulkDeleting ? 'wait' : 'pointer',
+                opacity: bulkDeleting ? 0.6 : 1,
+              }}
+            >
+              {bulkDeleting ? 'Deleting…' : 'Delete all'}
+            </button>
+          )}
+        </div>
       </header>
 
       <div
@@ -73,6 +166,8 @@ export default function KnowledgeBase({ tint = 'purple' }) {
           ...dropZone,
           borderColor: dragOver ? tintColor[tint] : 'var(--border-strong)',
           background: dragOver ? 'var(--tint-2)' : 'var(--tint-1)',
+          opacity: agentId ? 1 : 0.6,
+          cursor: agentId ? 'pointer' : 'wait',
         }}
       >
         <input
@@ -88,52 +183,96 @@ export default function KnowledgeBase({ tint = 'purple' }) {
         />
         <Icon name="upload" size={22} style={{ color: tintColor[tint] }} />
         <div style={{ marginTop: 10, fontSize: 13.5, fontWeight: 500, color: 'var(--text-1)' }}>
-          Drop files or click to upload
+          {agentId ? 'Drop files or click to upload' : 'Pick or create an agent above to enable uploads'}
         </div>
         <div style={{ marginTop: 4, fontSize: 12, color: 'var(--text-3)' }}>
-          PDF · CSV · XLSX · DOCX · TXT — up to 25 MB each
+          PDF · CSV · XLSX · DOCX · TXT — up to 50 MB each
         </div>
       </div>
 
-      {files.length > 0 && (
+      {(uploading.length > 0 || docs.length > 0) && (
         <ul style={fileList}>
-          {files.map(f => (
-            <li key={f.id} style={fileRow}>
+          {uploading.map(name => (
+            <li key={`up-${name}`} style={fileRow}>
               <div
                 style={{
                   width: 30, height: 30, borderRadius: 7,
                   background: 'var(--tint-2)',
                   display: 'grid', placeItems: 'center',
-                  color: f.status === 'indexed' ? 'var(--green)' : tintColor[tint],
-                  flexShrink: 0,
+                  color: tintColor[tint], flexShrink: 0,
                 }}
               >
-                <Icon name="file" size={14} />
+                <Icon name="upload" size={14} />
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 13, color: 'var(--text-1)', fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                  {f.name}
-                </div>
-                <div style={{ fontSize: 11.5, color: 'var(--text-3)', marginTop: 2 }}>
-                  {formatSize(f.size)} · {f.status === 'indexed' ? 'Indexed' : 'Parsing…'}
-                </div>
+                <div style={{ fontSize: 13, color: 'var(--text-1)', fontWeight: 500 }}>{name}</div>
+                <div style={{ fontSize: 11.5, color: 'var(--text-3)', marginTop: 2 }}>Uploading…</div>
               </div>
-              <button
-                onClick={() => removeFile(f.id)}
-                aria-label="Remove file"
-                style={{
-                  width: 26, height: 26, borderRadius: 6,
-                  background: 'transparent',
-                  border: '1px solid var(--border)',
-                  color: 'var(--text-3)',
-                  display: 'grid', placeItems: 'center',
-                  cursor: 'pointer', flexShrink: 0,
-                }}
-              >
-                <Icon name="x" size={12} />
-              </button>
             </li>
           ))}
+
+          {docs.map(d => {
+            const deleting = deletingIds.has(d.id);
+            return (
+              <li key={d.id} style={fileRow}>
+                <div
+                  style={{
+                    width: 30, height: 30, borderRadius: 7,
+                    background: 'var(--tint-2)',
+                    display: 'grid', placeItems: 'center',
+                    color: d.status === 'embedded' ? 'var(--green)'
+                         : d.status === 'failed'   ? 'var(--red)'
+                         : tintColor[tint],
+                    flexShrink: 0,
+                  }}
+                >
+                  <Icon name="file" size={14} />
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 13, color: 'var(--text-1)', fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    {d.filename}
+                  </div>
+                  <div style={{ fontSize: 11.5, color: 'var(--text-3)', marginTop: 2 }}>
+                    {formatSize(d.size_bytes)} · {statusLabel(d)}
+                    {d.purpose_category ? ` · ${d.purpose_category}` : ''}
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={(ev) => handleDelete(d, ev)}
+                  disabled={deleting}
+                  aria-label={`Remove ${d.filename}`}
+                  title={`Remove ${d.filename}`}
+                  style={{
+                    width: 28, height: 28, borderRadius: 7,
+                    background: deleting ? 'rgba(255,90,120,0.15)' : 'transparent',
+                    border: '1px solid var(--border)',
+                    color: deleting ? 'var(--red)' : 'var(--text-2)',
+                    display: 'grid', placeItems: 'center',
+                    cursor: deleting ? 'wait' : 'pointer',
+                    flexShrink: 0,
+                    transition: 'all 0.15s',
+                  }}
+                  onMouseEnter={e => {
+                    if (!deleting) {
+                      e.currentTarget.style.background = 'rgba(255,90,120,0.1)';
+                      e.currentTarget.style.borderColor = 'rgba(255,90,120,0.4)';
+                      e.currentTarget.style.color = 'var(--red)';
+                    }
+                  }}
+                  onMouseLeave={e => {
+                    if (!deleting) {
+                      e.currentTarget.style.background = 'transparent';
+                      e.currentTarget.style.borderColor = 'var(--border)';
+                      e.currentTarget.style.color = 'var(--text-2)';
+                    }
+                  }}
+                >
+                  <Icon name={deleting ? 'refresh' : 'x'} size={12} />
+                </button>
+              </li>
+            );
+          })}
         </ul>
       )}
     </section>
@@ -161,13 +300,13 @@ const dropZone = {
   borderRadius: 12,
   border: '1.5px dashed var(--border-strong)',
   padding: '32px 24px',
-  display: 'flex', flexDirection: 'column', alignItems: 'center',
-  textAlign: 'center',
+  display: 'flex', flexDirection: 'column' as const, alignItems: 'center',
+  textAlign: 'center' as const,
   transition: 'all 0.15s ease',
 };
 const fileList = {
   listStyle: 'none', padding: 0, margin: '14px 0 0',
-  display: 'flex', flexDirection: 'column', gap: 8,
+  display: 'flex', flexDirection: 'column' as const, gap: 8,
 };
 const fileRow = {
   display: 'flex', alignItems: 'center', gap: 12,

@@ -1,9 +1,6 @@
-import AgentShell from '../../components/agent/AgentShell';
-import KnowledgeBase from '../../components/agent/KnowledgeBase';
-import PromptEditor from '../../components/agent/PromptEditor';
-import TestPanel from '../../components/agent/TestPanel';
+import AgentWorkspace from '../../components/agent/AgentWorkspace';
 
-const TINT = 'teal';
+const TINT = 'teal' as const;
 
 const DEFAULT_PROMPT = `You are a Healthcare voice agent for a clinic. HIPAA-aware.
 
@@ -22,20 +19,13 @@ const PRESETS = [
 
 export default function HealthcareAgent() {
   return (
-    <AgentShell category="Healthcare" icon="health" tint={TINT}>
-      <div style={layout}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-          <KnowledgeBase tint={TINT} />
-          <PromptEditor tint={TINT} defaultValue={DEFAULT_PROMPT} presets={PRESETS} />
-        </div>
-        <TestPanel
-          tint={TINT}
-          category="Healthcare"
-          agentReply="Hi! I'm calling to remind you about your appointment tomorrow at 10:30 AM. Does that still work?"
-        />
-      </div>
-    </AgentShell>
+    <AgentWorkspace
+      slug="health"
+      category="Healthcare"
+      icon="health"
+      tint={TINT}
+      defaultPrompt={DEFAULT_PROMPT}
+      presets={PRESETS}
+    />
   );
 }
-
-const layout = { display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 380px', gap: 20 };

@@ -1,18 +1,20 @@
-import AgentShell from '../../components/agent/AgentShell';
-import KnowledgeBase from '../../components/agent/KnowledgeBase';
-import PromptEditor from '../../components/agent/PromptEditor';
-import TestPanel from '../../components/agent/TestPanel';
+import AgentWorkspace from '../../components/agent/AgentWorkspace';
 
-const TINT = 'green';
+const TINT = 'green' as const;
 
-const DEFAULT_PROMPT = `You are a Financial voice agent for a regulated lender.
+// Plain-English business requirement. Just describe what the agent
+// should do — the backend's compile_agent_prompt step turns this
+// into a polished, structured system prompt before runtime.
+const DEFAULT_PROMPT = `Handle incoming customer calls for our loan team.
+Answer questions about home loans, EMI calculations, and moratoriums
+using the knowledge base.
 
-Goals:
-  • Send payment reminders, collect KYC, and screen loan applicants.
-  • Stay strictly within compliance scripts; never improvise on numbers.
-  • Hand off to a licensed agent for any advisory question.
+If the customer asks something outside that scope, or anything you
+cannot answer confidently, tell them: "I'm the AI assistant — a human
+agent from our team will call you back shortly." Don't make up answers.
 
-Tone: professional, calm, precise. Always confirm identity before sharing details.`;
+Speak warmly and professionally. Keep replies short (1-2 sentences).
+Use the customer's language if they switch to Hindi or Tamil.`;
 
 const PRESETS = [
   { label: 'Payment reminder', body: 'Politely remind a customer of an overdue payment. Confirm identity, summarize amount + due date, offer to pay over the call or schedule a callback.' },
@@ -22,20 +24,13 @@ const PRESETS = [
 
 export default function FinancialAgent() {
   return (
-    <AgentShell category="Financial" icon="money" tint={TINT}>
-      <div style={layout}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-          <KnowledgeBase tint={TINT} />
-          <PromptEditor tint={TINT} defaultValue={DEFAULT_PROMPT} presets={PRESETS} />
-        </div>
-        <TestPanel
-          tint={TINT}
-          category="Financial"
-          agentReply="Of course. Could I please confirm your full name and date of birth before we continue?"
-        />
-      </div>
-    </AgentShell>
+    <AgentWorkspace
+      slug="fin"
+      category="Financial"
+      icon="money"
+      tint={TINT}
+      defaultPrompt={DEFAULT_PROMPT}
+      presets={PRESETS}
+    />
   );
 }
-
-const layout = { display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 380px', gap: 20 };
